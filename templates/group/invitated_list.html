@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    {% for invitated_group in invitated_groups %}
+      <div class="card col-3" style="width: 18rem;">
+        <div class="card-body">
+          <p class="card-text">{{invitated_group.group.title}}</p>
+        </div>
+        <a href="{% url 'groupapp:participate_group' invitated_group.group.id %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">参加する</a>
+      </div>
+    {% endfor %}
+  </div>
+  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a>
+</div>
+{% endblock content %}

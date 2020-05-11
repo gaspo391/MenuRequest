@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+  {% for item in request_menu %}
+    <div class="card col-3" style="width: 18rem;">
+      <a href="{% url 'menuapp:detail' item.pk %}">
+      <img src="{{item.menu.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">{{item.menu.menuName}}</a>
+        <!-- <a class="btn btn-secondary" href="{% url 'requestapp:add_requests' item.menu.id %}">Add to Requests</a> -->
+      </div>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        選択する
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">リクエストメニュー</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>{{item.menu.menuName}}でリクエストを送りますか？</p>
+            </div>
+            <div class="modal-footer">
+              <form action="{% url 'requestapp:answer_request' item.id %}" method="GET" id="delete-form">
+              {% csrf_token %}
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+              <button type="submit" class="btn btn-primary">リクエスト送信</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a>
+  <!-- <a href="{% url 'requestapp:send_request' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リクエストを送る</a> -->
+</div>
+{% endblock content %}

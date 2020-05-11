@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+  {% for item in request_menu %}
+    <div class="card col-3" style="width: 18rem;">
+      <a href="{% url 'menuapp:detail' item.pk %}">
+      <img src="{{item.menu.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">{{item.menu.menuName}}</a>
+        <!-- <a class="btn btn-secondary" href="{% url 'requestapp:add_requests' item.menu.id %}">Add to Requests</a> -->
+      </div>
+      <a href="{% url 'requestapp:request_cancel' item.menu.id %}" class="btn btn-primary active" role="button" aria-pressed="true">リクエストから外す</a>
+    </div>
+  {% endfor %}
+  </div>
+  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a>
+  {% if send_request is None %}
+    <a href="{% url 'requestapp:send_request' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リクエストを送る</a>
+  {% else %}
+    <a href="{% url 'requestapp:cancel_send_request' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リクエストを取り消す</a>
+  {% endif %}
+</div>
+{% endblock content %}

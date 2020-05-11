@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+  {% for user in users %}
+    <div class="card col-3" style="width: 18rem;">
+      <div class="card-body">
+        <p class="card-text">{{user.username}}</p>
+      </div>
+      {% if not mygroup is None %}
+        {% if user.id in group_member %}
+          <a href="{% url 'groupapp:remove_member' user.id %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">グループから外す</a>
+        {% else %}
+          {% if user.is_invitated == False %}
+          <a href="{% url 'groupapp:invitate_group' user.id %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">グループに招待する</a>
+          {% else %}
+          <a href="{% url 'groupapp:add_member' user.id %}" class="btn btn-primary btn-lg disabled" role="button" aria-pressed="true">招待中</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endfor %}
+  </div>
+  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a>
+</div>
+{% endblock content %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+  {% for item in object_list %}
+    <div class="card col-3" style="width: 18rem;">
+      <a href="{% url 'menuapp:detail' item.pk %}">
+      <img src="{{item.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text">{{item.menuName}}</a>
+      </div>
+      {% if item.id in request_menus %}
+        <a class="btn btn-primary disabled" href="#">リクエスト登録済み</a>
+      {% else %}
+        <a class="btn btn-primary" href="{% url 'requestapp:add_requests' item.id %}">リクエストに入れる</a>
+      {% endif %}
+    </div>
+  {% endfor %}
+  </div>
+  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:create' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">メニューを登録する</a>
+</div>
+{% endblock content %}
