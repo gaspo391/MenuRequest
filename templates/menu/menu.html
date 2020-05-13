@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+  <h2>ホーム</h2>
 {% if user.is_authenticated %}
   {% if not send_request is None %}
     <h3>本日のリクエストメニュー</h3>
@@ -24,8 +25,8 @@
     <a href="{% url 'requestapp:request_clear' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">リクエストメニューをクリア</a>
   {% endif %}
 
-  <a href="{% url 'menuapp:create' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">メニューを登録する</a>
-  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">メニューリストを見る</a>
+  <!-- <a href="{% url 'menuapp:create' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">メニューを登録する</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">メニューリストを見る</a> -->
 {% else %}
   <p>ログインしてください</p>
 {% endif %}

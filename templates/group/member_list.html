@@ -2,15 +2,48 @@
 
 {% block content %}
 <div class="container">
+  <div>
+    <h3>グループ名：{{group.title}}</h3>
+  </div>
+
+  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+  グループを削除する
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">グループを削除する</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <form action="{% url 'groupapp:delete_group' %}" method="POST" id="delete-form">
+          {% csrf_token %}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-primary">削除</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div class="row">
-    {% if not group_owner.id == user.id %}
+    <!-- {% if not group_owner.id == user.id %} -->
       <div class="card col-3" style="width: 18rem;">
         <div class="card-body">
           <p class="card-text">{{group_owner.username}}</p>
         </div>
         <a href="#" class="btn btn-primary btn-lg disabled" role="button" aria-pressed="true">グループオーナー</a>
       </div>
-    {% endif %}
+    <!-- {% endif %} -->
     {% for group_member in group_members %}
       <div class="card col-3" style="width: 18rem;">
         <div class="card-body">
@@ -28,7 +61,7 @@
       </div>
     {% endfor %}
   </div>
-  <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
-  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a>
+  <!-- <a href="{% url 'menuapp:menu' %}" class="btn btn-primary btn-lg" role="button" aria-pressed="true">ホームに戻る</a>
+  <a href="{% url 'menuapp:list' %}" class="btn btn-secondary btn-lg" role="button" aria-pressed="true">リストに戻る</a> -->
 </div>
 {% endblock content %}

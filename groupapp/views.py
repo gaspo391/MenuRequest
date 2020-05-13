@@ -18,38 +18,50 @@ User = get_user_model()
 #   fields = ('name', 'requests', 'owner')
 #   success_url = reverse_lazy('menuapp:menu')
 
-# def make_group(request):
-#     if request.method == 'POST':
-#         form = GroupForm(request.POST)
-        
-#         if form.is_valid():
-#             form.save()
-#             request.user.belong_group = True
-#             request.user.save()
-#             return redirect(request.META['HTTP_REFERER'])
-#     else:
-#         form = GroupForm()
-#     return render(request, 'group/make_group.html', {'form': form})
-
 def make_group(request):
-  form = GroupForm(request.POST)
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            request.user.belong_group = True
+            request.user.is_invitated = True
+            request.user.save()
+            # return redirect(request.META['HTTP_REFERER'])
+            return redirect('menuapp:menu')
+    else:
+        form = GroupForm()
+    return render(request, 'group/make_group.html', {'form': form})
+
+# def make_group(request):
+#   form = GroupForm(request.POST)
   
-  if form.is_valid():
-      form.save()
-      request.user.belong_group = True
-      request.user.is_invitated = True
-      request.user.save()
-      return redirect(request.META['HTTP_REFERER'])
-  else:
-    return redirect(request.META['HTTP_REFERER'])
+#   if form.is_valid():
+#       form.save()
+#       request.user.belong_group = True
+#       request.user.is_invitated = True
+#       request.user.save()
+#       return redirect(request.META['HTTP_REFERER'])
+#   else:
+#     return redirect(request.META['HTTP_REFERER'])
 
 def delete_group(request):
   group = Group.objects.get(owner=request.user)
+  group_members = GroupMember.objects.filter(group=group)
+  
+  for group_member in group_members:
+    group_member.member.belong_group = False
+    group_member.member.is_invitated = False
+    group_member.member.save()
+    group_member.delete()
+
   group.delete()
   request.user.belong_group = False
   request.user.is_invitated = False
   request.user.save()
-  return redirect(request.META['HTTP_REFERER'])
+
+  # return redirect(request.META['HTTP_REFERER'])
+  return redirect('menuapp:menu')
 
 # def register_member(request):
 #   if request.method == 'POST':
@@ -159,7 +171,7 @@ def member_list(request):
       group_owner = None
       invitated_members = None
 
-  return render(request, 'group/member_list.html', {'group_members':group_members, 'invitated_members':invitated_members, 'group_owner':group_owner})
+  return render(request, 'group/member_list.html', {'group_members':group_members, 'invitated_members':invitated_members, 'group_owner':group_owner, 'group':group})
 
 def invitated_list(request):
   invitated_groups = GroupInvitatedMember.objects.filter(member = request.user)
