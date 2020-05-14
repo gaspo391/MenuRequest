@@ -6,108 +6,84 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          メニュー管理
+          メニュー
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="{% url 'menuapp:list' %}">メニューリストの表示</a>
           <a class="dropdown-item" href="{% url 'menuapp:create' %}">メニューの登録</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <a class="dropdown-item" href="{% url 'requestapp:requests'%}">リクエスト一覧</a> 
+          <!-- <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a> -->
         </div>
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          グループ管理
+          グループ
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          {% if mygroup is None %}
-          {% if user.belong_group == True %}
+          <!-- 自分がオーナーのグループがない場合 -->
+          {% if mygroup is None %} 
+            <!-- グループに所属している -->
+            {% if user.belong_group == True %}
+              <a href="{% url 'groupapp:member_list' %}" class="dropdown-item">メンバーリスト</a>
+            <!-- グループに所属していない -->
+            {% else %}
+              <a class="dropdown-item" href="{% url 'groupapp:make_group'%}">グループを作成する</a>
+            {% endif %}
+          {% else %}
             <a href="{% url 'groupapp:member_list' %}" class="dropdown-item">メンバーリスト</a>
-          {% else %}
-            <a class="dropdown-item" href="{% url 'groupapp:make_group'%}">グループを作成する</a>
           {% endif %}
-          {% else %}
-          <!-- Button trigger modal -->
-          <button type="button" class="dropdown-item" data-toggle="modal" data-target="#exampleModal">
-            グループ({{mygroup.title}})を削除する
-          </button>
-
-          <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">グループを削除する</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  ...
-                </div>
-                <div class="modal-footer">
-                  <form action="{% url 'groupapp:delete_group' %}" method="POST" id="delete-form">
-                    {% csrf_token %}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-primary">削除</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          <a href="{% url 'groupapp:member_list' %}" class="dropdown-item">メンバーリスト</a>
-          {% endif %}
-          <!-- <a class="dropdown-item" href="{% url 'menuapp:list' %}">メニューリストの表示</a>
-          <a class="dropdown-item" href="{% url 'menuapp:create' %}">メニューの登録</a> -->
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
+          <p class="dropdown-item">ユーザーを検索</p>
+          <form class="form-inline my-2 my-lg-0 dropdown-item" action="{% url 'searchapp:search_user' %}" method="get">
+            {% csrf_token %}
+            <!-- name="q" と追加-->
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+          </form>
+          <!-- <a class="dropdown-item" href="#">Something else here</a> -->
         </div>
       </li>
-      {% if user.is_authenticated %}
-        <a class="btn btn-secondary" href="{% url 'requestapp:requests'%}">リクエスト一覧</a>        
-      {% endif %}
     </ul>
-    {% if user.is_authenticated %}
+
+    <!-- 招待されている状態(グループに所属していてもTrue) -->
     {% if user.is_invitated == True %}
+      <!-- グループに所属していない場合 -->
       {% if user.belong_group == False %}
         <a href="{% url 'groupapp:invitated_list' %}" class="btn btn-primary" role="button" aria-pressed="true">招待されています</a>
       {% else %}
+        <!-- グループに所属していて、オーナーからメニューが届いた場合 -->
         {% if not receive_request is None %}
           <a href="{% url 'requestapp:receive_list' receive_request.id %}" class="btn btn-primary" role="button" aria-pressed="true">リクエストを受け取りました</a>
         {% endif %}
       {% endif %}
     {% endif %}
-    <form action="{% url 'logout' %}" method="POST" id="delete-form">
+
+    <!-- ログアウト -->
+    <!-- <form action="{% url 'logout' %}" method="POST" id="delete-form">
       {% csrf_token %}
       <button type="submit" class="btn btn-primary">logout</button>
-    </form>
-    {% else %}
-    <form action="{% url 'signup' %}" method="GET" id="delete-form">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary mr-2">signup</button>
-    </form>
-    <form action="{% url 'login' %}" method="GET" id="delete-form">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary mr-2">login</button>
-    </form>
-    {% endif %}
-    <form class="form-inline my-2 my-lg-0" action="{% url 'searchapp:search_user' %}" method="get">
-      {% csrf_token %}
-      <!-- name="q" と追加-->
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
-      <button class="btn btn-secondary my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
-    </form>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+    </form> -->
+
+    <!-- アカウント情報 -->
+    <ul class="navbar-nav my-2 my-lg-0">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{user.username}}さん
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">アカウント情報</a>
+          <div class="dropdown-divider"></div>
+          <!-- ログアウト -->
+          <form class="dropdown-item" action="{% url 'logout' %}" method="POST" id="delete-form">
+            {% csrf_token %}
+            <button type="submit" class="dropdown-item">logout</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+
   </div>
 </nav>
